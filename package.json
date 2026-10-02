@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "build": "npm run check && vite build",
+    "build": "npm run check && vite build && node scripts/build-pages.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 4178 --strictPort",
     "verify": "npm run lint && npm run test && npm run build"
   },

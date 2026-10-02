@@ -82,4 +82,16 @@ GitHub Pages ou qualquer hospedagem somente estática entrega o frontend, mas n�
 
 O workflow `Quality` faz instalação limpa com `npm ci`, lint, testes de entrega do endpoint, TypeScript, build e testes Playwright. Os cenários incluem 360, 390, 768 e 1440 px, navegação mobile, CTA até o formulário, indisponibilidade, validação, envio em andamento, falha com retenção dos campos e confirmação após sucesso.
 
-As animações incluem entrada sequencial, saída do hero na rolagem e entrada/saída reversível dos blocos. Respeitam `prefers-reduced-motion`, que mantém a página estática e visível. O GSAP usa `useGSAP` para limpeza ao desmontar; os formulários têm labels, mensagens de erro e estados acessíveis. Playwright também verifica as fontes carregadas, saída e retorno da rolagem.
+As animações incluem entrada sequencial, saída do hero na rolagem e entrada/saída reversível dos blocos. Respeitam `prefers-reduced-motion`, que mantém a página estática e visível. O GSAP usa `gsap.context().revert()` para limpeza ao desmontar; os formulários têm labels, mensagens de erro e estados acessíveis. Playwright também verifica as fontes carregadas, saída e retorno da rolagem.
+
+## SEO e performance
+
+O build pré-renderiza todo o conteúdo com React: títulos, textos, links e seções já estão no HTML, inclusive sem JavaScript. A hidratação mantém menus e formulários interativos. Metadados por página, dados estruturados Organization / Service / WebPage e robots.txt são gerados no build. Não são inventadas avaliações, preços ou URLs públicas.
+
+Configure `SITE_URL=https://seu-dominio.com.br` (somente a origem pública) no ambiente de build e execute `npm run build` para gerar canonical, URLs de compartilhamento e sitemap.xml. Sem domínio definido, esses endereços ficam ausentes. O webhook continua sendo uma variável separada e exclusiva do servidor.
+
+Fontes WOFF2 locais em subconjunto Latin com preload; imagens WebP com dimensões e srcset; imagens abaixo da dobra com lazy loading; stylesheet pequeno embutido no HTML para eliminar uma requisição bloqueante; JavaScript de hidratação com prioridade baixa; GSAP carregado somente perto da seção animada. A configuração Vercel prevê cache longo para assets com hash e nenhum cache para a API. As animações preservam o HTML visível antes da hidratação e respeitam movimento reduzido.
+
+Os testes Playwright usam o build de produção: execute `npm run build` antes de `npm run test:e2e`. Incluem conteúdo sem JavaScript, ausência de erros de hidratação, metadados e comportamento dos formulários.
+
+Resultados e condições das medições locais: [docs/performance.md](docs/performance.md).

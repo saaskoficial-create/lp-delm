@@ -19,3 +19,5 @@ Tipografia: Sora Variable nos títulos e Inter Variable no corpo e nos controles
 Os diagramas e módulos de automação são explicações conceituais dos serviços, não interfaces de software existentes. O Animated Beam foi adaptado da referência de dillionverma/Magic UI consultada via 21st.dev, com geometria responsiva, cleanup, animação única e fallback estático para movimento reduzido.
 
 Fontes de craft: Frontend Design (Anthropic), Emil Kowalski Design Engineering, Impeccable, Taste Skill e Vercel Web Interface Guidelines. A documentação e o briefing prevalecem sobre regras genéricas conflitantes de fonte, headline e alternância de fundos.
+
+O símbolo recebeu derivados de 132 e 216 px para os tamanhos reais de uso, preservando geometria e paleta. A fotografia do hero mantém prioridade de carregamento; as demais mantêm lazy loading. As animações GSAP são carregadas sob demanda, com cleanup via gsap.context().revert().
