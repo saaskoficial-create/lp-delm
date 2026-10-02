@@ -22,11 +22,21 @@ for (const width of [360, 390, 768, 1440]) {
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport)
     await expect(page.getByRole('button', { name: 'Quero analisar minha operação' })).toBeDisabled()
     await expect(page.getByText('O envio está temporariamente indisponível.', { exact: false })).toBeVisible()
+    for (const image of await page.locator('img[loading="lazy"]').all()) {
+      await image.scrollIntoViewIfNeeded()
+      await expect.poll(() => image.evaluate((node) => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
+      await image.evaluate((node) => (node as HTMLImageElement).decode())
+    }
+    for (const cta of await page.locator('a.cta-button').all()) await expect(cta).toHaveAttribute('href', '#diagnostico')
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
     await page.screenshot({ path: `test-results/delm-${width}-hero.png` })
     if (width === 1440 || width === 390) await page.screenshot({ path: `test-results/delm-${width}-full.png`, fullPage: true })
     if (width < 850) {
       await page.getByRole('button', { name: 'Abrir menu' }).click()
       await expect(page.getByRole('dialog')).toBeVisible()
+      await page.keyboard.press('Escape')
+      await expect(page.getByRole('button', { name: 'Abrir menu' })).toBeFocused()
+      await page.getByRole('button', { name: 'Abrir menu' }).click()
       await page.getByRole('navigation', { name: 'Navegação mobile' }).getByRole('link', { name: 'Mapear meu gargalo' }).click()
     } else {
       await page.locator('.hero-copy').getByRole('link', { name: 'Quero mapear meu gargalo' }).click()
@@ -52,7 +62,7 @@ test('validation, pending, failed delivery, retained values and confirmed succes
   expect(postCount).toBe(0)
   await fillLead(page)
   await submit.click()
-  await expect(page.getByRole('button', { name: 'Enviando informações...' })).toBeDisabled()
+  await expect(page.getByRole('button', { name: 'Enviando informações…' })).toBeDisabled()
   await expect(page.getByRole('alert')).toContainText('Falha ao enviar')
   await expect(page.getByLabel('Empresa', { exact: true })).toHaveValue('Operação Exemplo')
   await expect(page.getByText('Agora entendemos um pouco mais.', { exact: false })).toHaveCount(0)

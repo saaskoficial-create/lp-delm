@@ -29,7 +29,7 @@ export const site = {
     { icon: LayoutDashboard, title: 'Portais & plataformas', description: 'Centralize processos, aprovações e informações em um ambiente próprio.', tag: 'TUDO NO MESMO LUGAR' },
     { icon: Smartphone, title: 'Aplicativos', description: 'Leve os processos da empresa até quem precisa deles, dentro ou fora da operação.', tag: 'OPERAÇÃO EM MOVIMENTO' },
     { icon: ChartNoAxesCombined, title: 'Dashboards operacionais', description: 'Organize os dados para acompanhar o que acontece e apoiar decisões.', tag: 'VISIBILIDADE PARA DECIDIR' },
-  ],
+  ] as const,
   b2bApplications: ['Gestão de ordens de serviço', 'Portais internos', 'Fluxos de aprovação', 'Integração financeira e operacional', 'Automação de tarefas repetitivas', 'Centralização de informações', 'Sistemas para equipes externas', 'Dashboards e acompanhamento operacional'],
   logisticsApplications: ['ERP + WMS', 'ERP + TMS', 'Integrações com transportadoras', 'Rastreamento de operação', 'Controle de rotas', 'Dashboards', 'Portais internos', 'Automação entre sistemas', 'Fluxos de expedição e entrega'],
   differentiators: ['Entendemos a operação.', 'Identificamos o gargalo.', 'Definimos a solução.', 'Desenvolvemos a tecnologia.', 'Evoluímos junto com a empresa.'],

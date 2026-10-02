@@ -16,10 +16,10 @@ export function Reveal({ children, className, delay = 0 }: { children: ReactNode
   const reduced = useReducedMotion()
   return <motion.div
     className={className}
-    initial={reduced ? false : { opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
+    initial={reduced ? false : { opacity: 0 }}
+    whileInView={{ opacity: 1 }}
     viewport={{ once: true, amount: 0.12 }}
-    transition={{ duration: 0.5, delay, ease: [0.2, 0.7, 0.3, 1] }}
+    transition={{ duration: 0.3, delay, ease: [0.16, 1, 0.3, 1] }}
   >{children}</motion.div>
 }
 

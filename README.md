@@ -31,7 +31,7 @@ As dez seções seguem a copy fornecida para a DELM: hero, problema, soluções,
 - `src/styles.css`: tokens de marca, layout e breakpoints.
 - `public/brand/delm-symbol.jpg`: logo atual fornecido pelo cliente.
 
-O azul foi derivado visualmente do logo; não foi fornecido manual com códigos oficiais. Os diagramas de ERP/WMS/TMS são ilustrações explicativas, e não screenshots de um produto. Não há resultados, preços ou depoimentos inventados.
+O azul foi derivado visualmente do logo; não foi fornecido manual com códigos oficiais. As fotografias e a ilustração de logística são cenas geradas, sem representar equipe ou clientes reais da DELM. Os diagramas de ERP/WMS/TMS são ilustrações explicativas, e não screenshots de um produto. Não há resultados, preços ou depoimentos inventados. A direção visual está em `DESIGN.md`; a proveniência e os prompts dos assets estão em [docs/assets.md](docs/assets.md).
 
 ## Configurar a captação
 
