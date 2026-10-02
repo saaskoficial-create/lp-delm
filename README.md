@@ -33,6 +33,10 @@ As dez seções seguem a copy fornecida para a DELM: hero, problema, soluções,
 
 A identidade preta e amarela segue a imagem corrigida pelo usuário em 02/10/2026. Acento principal `#ffb800`; não foi fornecido manual com códigos oficiais. A página usa Sora nos títulos e Inter no texto, ambas hospedadas localmente. As fotografias são reais, licenciadas pelo Pexels, e não representam equipe, clientes ou endosso da DELM. Os diagramas de ERP/WMS/TMS são ilustrações explicativas, e não screenshots de um produto. Não há resultados, preços ou depoimentos inventados. A direção visual está em `DESIGN.md`; fontes, autores e licenças dos assets estão em [docs/assets.md](docs/assets.md).
 
+## Google Tag Manager
+
+O contêiner `GTM-P8ZS3GSZ` está instalado no HTML base (`index.html`): script no início do `<head>` e fallback `noscript` imediatamente após a abertura do `<body>`. O build mantém os dois trechos em todas as páginas que usam esse HTML. As tags e os eventos são configurados e publicados no próprio Google Tag Manager.
+
 ## Configurar a captação
 
 **Sem `LEAD_WEBHOOK_URL`, o formulário informa indisponibilidade e não aceita envios.** A URL do webhook fica apenas no servidor e nunca deve receber o prefixo `VITE_`.
