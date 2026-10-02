@@ -1,14 +1,18 @@
 # Assets e referências visuais
 
-O símbolo DELM em `public/brand/delm-symbol.jpg` foi fornecido pelo cliente. Os arquivos abaixo foram gerados com a ferramenta de imagens do ChatGPT para esta página, em 02/10/2026. São **cenas ilustrativas**, não fotografias da equipe DELM, de seus clientes ou de uma operação real contratante.
+O símbolo DELM em `public/brand/delm-symbol.jpg` foi fornecido pelo cliente. As imagens da página são **fotografias reais de banco de imagens**, selecionadas e inspecionadas em 02/10/2026. Não representam a equipe DELM, clientes, cases ou endosso dos profissionais fotografados. As cenas sintéticas da versão anterior foram retiradas da página e dos assets ativos.
 
-| Arquivo em `public/images/` | Uso | Prompt de geração |
+| Arquivo em `public/images/` | Uso | Autor e fonte |
 | --- | --- | --- |
-| `operacao-humana-600.webp`, `operacao-humana-1100.webp` | Hero | Fotografia editorial 4:5, profissional brasileira e colega analisando um tablet junto a uma janela de operação logística; luz natural, azul sóbrio, pessoas e mãos realistas, sem logos, textos legíveis ou aparência de banco de imagens publicitário. |
-| `equipe-processos-700.webp`, `equipe-processos-1200.webp` | Empresas B2B | Fotografia editorial 3:2 de três profissionais brasileiros colaborando em um mapeamento de processos, mesa com papéis e laptop; escritório realista, atmosfera natural e cores neutras com azul; sem marcas ou textos legíveis. |
-| `logistica-conectada-700.webp`, `logistica-conectada-1200.webp` | Logística | Ilustração isométrica 4:3 em argila branca, escritório, centro de distribuição, caixas, empilhadeira, dois trabalhadores e caminhão azul-cobalto; linhas azuis conectando os elementos, fundo branco limpo, sem texto ou logos. |
+| `operacao-real-600.webp`, `operacao-real-1100.webp` | Hero | [Tima Miroshnichenko / Pexels 6169659](https://www.pexels.com/photo/woman-in-black-jacket-holding-black-tablet-computer-6169659/), publicada em 12/12/2020, fotografada em 26/11/2020. |
+| `colaboracao-real-700.webp`, `colaboracao-real-1200.webp` | Empresas B2B | [Tima Miroshnichenko / Pexels 5439402](https://www.pexels.com/photo/group-of-people-working-together-in-an-office-5439402/), publicada em 24/09/2020, fotografada em 15/09/2020. |
+| `logistica-real-700.webp`, `logistica-real-1200.webp` | Logística | [Tiger Lily / Pexels 4481528](https://www.pexels.com/photo/men-working-in-a-warehouse-4481528/), publicada em 25/05/2020, fotografada em 11/03/2020. |
 
-Derivados WebP comprimidos em qualidade 86, com dimensões responsivas e preservação dos PNGs originais no diretório de geração local. A página usa `srcset`, dimensões reservadas, prioridade no hero e lazy loading nos demais assets.
+Uso conforme a [licença Pexels](https://www.pexels.com/license/), consultada em 02/10/2026: permite uso em sites e publicidade, modificação e uso gratuito; não permite sugerir endosso dos modelos ou marcas. Os créditos são preservados neste manifesto. Metadados das três páginas incluem data e câmera da fotografia.
+
+Derivados WebP comprimidos em qualidade 86, apenas redimensionados, sem geração ou alteração de pessoas. A página usa `srcset`, dimensões reservadas, prioridade no hero e lazy loading nos demais assets. Originais de pesquisa ficam fora dos arquivos publicados.
+
+Tipografia: Sora Variable nos títulos e Inter Variable no corpo e nos controles. Arquivos WOFF2 locais via Fontsource; ambas usam SIL Open Font License 1.1. O contraste das duas famílias é verificado no navegador.
 
 Os diagramas e módulos de automação são explicações conceituais dos serviços, não interfaces de software existentes. O Animated Beam foi adaptado da referência de dillionverma/Magic UI consultada via 21st.dev, com geometria responsiva, cleanup, animação única e fallback estático para movimento reduzido.
 

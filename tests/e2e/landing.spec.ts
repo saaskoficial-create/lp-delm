@@ -16,8 +16,14 @@ for (const width of [360, 390, 768, 1440]) {
   test(`responsive content and real unconfigured state at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
+    await page.evaluate(() => document.fonts.ready)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Se sua equipe criou planilhas para fazer o sistema funcionar, o sistema já falhou.')
     await expect(page.locator('main > section')).toHaveCount(10)
+    if (width === 1440) {
+      await expect(page.locator('h1')).toHaveCSS('font-family', '"Sora Variable", sans-serif')
+      await expect(page.locator('body')).toHaveCSS('font-family', '"Inter Variable", sans-serif')
+      expect(await page.evaluate(() => document.fonts.check('560 54px "Sora Variable"') && document.fonts.check('400 16px "Inter Variable"'))).toBe(true)
+    }
     const dimensions = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }))
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport)
     await expect(page.getByRole('button', { name: 'Quero analisar minha operação' })).toBeDisabled()
@@ -71,15 +77,27 @@ test('validation, pending, failed delivery, retained values and confirmed succes
   expect(postCount).toBe(2)
 })
 
-test('normal animation mode renders without browser errors', async ({ page }) => {
+test('entrance, scroll exit and return work without browser errors', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.goto('/')
+  await expect(page.locator('h1')).toHaveCSS('opacity', '1')
+  await expect(page.locator('.hero-copy')).toHaveCSS('opacity', '1')
+  await page.evaluate(() => {
+    const hero = document.getElementById('inicio')!
+    window.scrollTo({ top: hero.offsetTop + hero.offsetHeight * 0.8, behavior: 'instant' })
+  })
+  await expect.poll(() => page.locator('.hero-copy').evaluate((node) => Number(getComputedStyle(node).opacity))).toBeLessThan(0.6)
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
   await expect(page.locator('.hero-copy')).toHaveCSS('opacity', '1')
   await page.locator('#logistica').scrollIntoViewIfNeeded()
   await expect(page.locator('.logistics-copy')).toHaveCSS('opacity', '1')
   await page.screenshot({ path: 'test-results/delm-logistica-desktop.png' })
+  await page.locator('#processo').scrollIntoViewIfNeeded()
+  await expect(page.locator('.logistics-copy')).toHaveCSS('opacity', '0')
+  await page.locator('#logistica').scrollIntoViewIfNeeded()
+  await expect(page.locator('.logistics-copy')).toHaveCSS('opacity', '1')
   await page.locator('#processo').scrollIntoViewIfNeeded()
   await expect(page.locator('.process-step')).toHaveCount(5)
   await page.locator('#diagnostico').scrollIntoViewIfNeeded()

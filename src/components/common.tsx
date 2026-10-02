@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useRef, type ReactNode } from 'react'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -14,12 +14,14 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
 
 export function Reveal({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const reduced = useReducedMotion()
+  const element = useRef<HTMLDivElement>(null)
+  const inView = useInView(element, { amount: 0.08 })
   return <motion.div
+    ref={element}
     className={className}
-    initial={reduced ? false : { opacity: 0 }}
-    whileInView={{ opacity: 1 }}
-    viewport={{ once: true, amount: 0.12 }}
-    transition={{ duration: 0.3, delay, ease: [0.16, 1, 0.3, 1] }}
+    initial={reduced ? false : { opacity: 0, y: 18 }}
+    animate={{ opacity: reduced || inView ? 1 : 0, y: reduced || inView ? 0 : 18 }}
+    transition={{ duration: inView ? 0.5 : 0.22, delay: inView ? delay : 0, ease: [0.16, 1, 0.3, 1] }}
   >{children}</motion.div>
 }
 

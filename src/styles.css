@@ -2,8 +2,10 @@
 @import "tw-animate-css";
 
 @font-face { font-family: 'Inter Variable'; font-style: normal; font-weight: 100 900; font-display: swap; src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Sora Variable'; font-style: normal; font-weight: 100 800; font-display: swap; src: url('@fontsource-variable/sora/files/sora-latin-wght-normal.woff2') format('woff2'); }
 @theme inline {
   --font-sans: 'Inter Variable', sans-serif;
+  --font-display: 'Sora Variable', sans-serif;
   --color-background: var(--background); --color-foreground: var(--foreground);
   --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground);
@@ -26,7 +28,7 @@
   html { scroll-behavior: smooth; scroll-padding-top: 96px; color-scheme: light; }
   body { margin: 0; background: var(--background); color: var(--foreground); font-family: 'Inter Variable', sans-serif; -webkit-font-smoothing: antialiased; }
   h1, h2, h3, p, figure { margin: 0; }
-  h1, h2, h3 { text-wrap: balance; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
   p { text-wrap: pretty; }
   a { text-decoration: none; }
   button, a, input, select, textarea { -webkit-tap-highlight-color: #3e4fe81a; touch-action: manipulation; }
@@ -71,12 +73,12 @@
 .hero-grid { display: grid; grid-template-columns: 1.13fr 1fr; gap: 72px; align-items: center; }
 .hero-copy { min-width: 0; }
 .hero-context { color: #3e4fe8; font-size: 13px; font-weight: 550; margin-bottom: 24px; }
-.hero h1 { font-size: clamp(42px, 4vw, 56px); line-height: 1.075; letter-spacing: -.039em; font-weight: 580; text-wrap: pretty; }
+.hero h1 { font-size: clamp(42px, 3.8vw, 54px); line-height: 1.12; letter-spacing: -.052em; font-weight: 560; text-wrap: pretty; }
 .hero-description { max-width: 530px; margin-top: 26px; color: #616b80; font-size: 16px; line-height: 1.8; }
 .hero-copy .cta-button { margin-top: 30px; } .hero-note { max-width: 400px; margin-top: 16px; font-size: 12px; line-height: 1.75; color: #677287; }
 .hero-portrait { position: relative; min-width: 0; padding: 0 0 34px 26px; }
 .hero-portrait::before { content: ''; position: absolute; top: 32px; left: 0; bottom: 0; width: 74%; background: #e9edff; border-radius: 20px; }
-.hero-portrait > img { position: relative; width: 100%; height: 556px; object-fit: cover; object-position: 50% 42%; border-radius: 20px; }
+.hero-portrait > img { position: relative; width: 100%; height: 556px; object-fit: cover; object-position: 36% 45%; border-radius: 20px; }
 .hero-portrait figcaption { position: absolute; left: 0; bottom: 0; display: flex; align-items: center; gap: 16px; background: white; border: 1px solid #e3e8f2; padding: 20px 26px; border-radius: 12px; box-shadow: 0 12px 32px #1d2d6810; }
 .hero-portrait figcaption p { color: #626c85; font-size: 14px; line-height: 1.6; }
 .hero-portrait figcaption strong { color: #1c2a50; font-weight: 600; }
@@ -146,7 +148,7 @@
 .b2b-section { padding-top: 48px; }
 .audience-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 76px; align-items: center; }
 .audience-visual { min-width: 0; background: #f2f4fb; border-radius: 20px; overflow: hidden; }
-.audience-visual > img { width: 100%; height: 586px; object-fit: cover; object-position: 57% center; }
+.audience-visual > img { width: 100%; height: 586px; object-fit: cover; object-position: 52% center; }
 .audience-visual figcaption { display: flex; align-items: center; gap: 14px; padding: 25px 28px; font-size: 14px; color: #64718b; }
 .audience-visual figcaption svg { color: #3e4fe8; } .audience-visual figcaption strong { color: #233758; font-weight: 550; }
 .audience-copy > p:not(.section-context) { color: #647087; font-size: 15px; line-height: 1.8; margin-top: 21px; }
@@ -161,7 +163,7 @@
 .logistics-copy > p:not(.section-context) { color: #c0c8df; font-size: 15px; line-height: 1.85; margin-top: 22px; max-width: 470px; }
 .logistics-copy .logistics-punchline { font-size: 21px !important; color: #cbd2ff !important; letter-spacing: -.5px; }
 .logistics-visual { background: white; border-radius: 20px; overflow: hidden; }
-.logistics-visual > img { width: 100%; height: auto; }
+.logistics-visual > img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
 .logistics-visual figcaption { display: flex; align-items: center; gap: 12px; padding: 23px 26px; font-size: 13px; color: #63708a; border-top: 1px solid #e8ecf4; }
 .logistics-visual figcaption svg { flex-shrink: 0; color: #3e4fe8; } .logistics-visual figcaption strong { color: #263859; font-weight: 550; }
 .logistics-applications { margin-top: 56px; border-top: 1px solid #ffffff26; padding-top: 30px; }
@@ -316,7 +318,7 @@
   .hero-context { font-size: 12px; margin-bottom: 20px; } .hero h1 { font-size: clamp(36px, 9.65vw, 48px); line-height: 1.08; letter-spacing: -1.7px; }
   .hero-description { font-size: 15px; line-height: 1.8; margin-top: 23px; } .hero-copy .cta-button { margin-top: 24px; }
   .hero-note { font-size: 11px; margin-top: 13px; } .hero-portrait { padding: 0 0 29px 18px; }
-  .hero-portrait > img { height: auto; aspect-ratio: 1.04; object-position: 50% 37%; }
+  .hero-portrait > img { height: auto; aspect-ratio: 1.04; object-position: 36% 40%; }
   .hero-portrait figcaption { padding: 15px 19px; gap: 12px; } .hero-portrait figcaption p { font-size: 12px; }
   .portrait-symbol { width: 40px; height: 40px; } .portrait-symbol img { width: 34px; height: 34px; }
   .section h2, .honest-section h2 { font-size: 34px; letter-spacing: -1.35px; line-height: 1.16; }

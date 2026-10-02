@@ -31,7 +31,7 @@ As dez seções seguem a copy fornecida para a DELM: hero, problema, soluções,
 - `src/styles.css`: tokens de marca, layout e breakpoints.
 - `public/brand/delm-symbol.jpg`: logo atual fornecido pelo cliente.
 
-O azul foi derivado visualmente do logo; não foi fornecido manual com códigos oficiais. As fotografias e a ilustração de logística são cenas geradas, sem representar equipe ou clientes reais da DELM. Os diagramas de ERP/WMS/TMS são ilustrações explicativas, e não screenshots de um produto. Não há resultados, preços ou depoimentos inventados. A direção visual está em `DESIGN.md`; a proveniência e os prompts dos assets estão em [docs/assets.md](docs/assets.md).
+O azul foi derivado visualmente do logo; não foi fornecido manual com códigos oficiais. A página usa Sora nos títulos e Inter no texto, ambas hospedadas localmente. As fotografias são reais, licenciadas pelo Pexels, e não representam equipe, clientes ou endosso da DELM. Os diagramas de ERP/WMS/TMS são ilustrações explicativas, e não screenshots de um produto. Não há resultados, preços ou depoimentos inventados. A direção visual está em `DESIGN.md`; fontes, autores e licenças dos assets estão em [docs/assets.md](docs/assets.md).
 
 ## Configurar a captação
 
@@ -78,4 +78,4 @@ GitHub Pages ou qualquer hospedagem somente estática entrega o frontend, mas n�
 
 O workflow `Quality` faz instalação limpa com `npm ci`, lint, testes de entrega do endpoint, TypeScript, build e testes Playwright. Os cenários incluem 360, 390, 768 e 1440 px, navegação mobile, CTA até o formulário, indisponibilidade, validação, envio em andamento, falha com retenção dos campos e confirmação após sucesso.
 
-As animações respeitam `prefers-reduced-motion`. O GSAP usa `useGSAP` para limpeza ao desmontar; os formulários têm labels, mensagens de erro e estados acessíveis.
+As animações incluem entrada sequencial, saída do hero na rolagem e entrada/saída reversível dos blocos. Respeitam `prefers-reduced-motion`, que mantém a página estática e visível. O GSAP usa `useGSAP` para limpeza ao desmontar; os formulários têm labels, mensagens de erro e estados acessíveis. Playwright também verifica as fontes carregadas, saída e retorno da rolagem.

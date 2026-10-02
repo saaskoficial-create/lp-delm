@@ -1,5 +1,7 @@
 # Third-party notices
 
+Sora Variable and Inter Variable are distributed under SIL Open Font License 1.1. Copyright and full license are in `public/fonts-LICENSE.txt`, also included in the production build. Photograph authors, source pages and Pexels license are documented in `docs/assets.md`.
+
 `src/components/AnimatedBeam.tsx` contains geometry adapted from dillionverma's Animated Beam, retrieved via 21st.dev / Magic UI. Original project: https://github.com/magicuidesign/magicui.
 
 ## Magic UI
