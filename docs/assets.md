@@ -1,6 +1,8 @@
 # Assets e referências visuais
 
-O símbolo DELM em `public/brand/delm-symbol.jpg` foi fornecido pelo cliente. As imagens da página são **fotografias reais de banco de imagens**, selecionadas e inspecionadas em 02/10/2026. Não representam a equipe DELM, clientes, cases ou endosso dos profissionais fotografados. As cenas sintéticas da versão anterior foram retiradas da página e dos assets ativos.
+O símbolo amarelo sobre fundo preto foi fornecido pelo usuário em 02/10/2026, substituindo a marca azul da versão anterior. `public/brand/delm-logo-original.png` preserva a imagem recebida; `delm-symbol.webp` remove apenas as margens pretas externas e redimensiona o desenho para 512 px, sem recriar ou recolorir o símbolo; `delm-favicon.png` é o derivado para o navegador. Amarelo principal `#ffb800`, preto `#080808` e neutros de apoio: códigos derivados da imagem, sem manual com valores oficiais.
+
+As imagens da página são **fotografias reais de banco de imagens**, selecionadas e inspecionadas em 02/10/2026. Não representam a equipe DELM, clientes, cases ou endosso dos profissionais fotografados. As cenas sintéticas da versão anterior foram retiradas da página e dos assets ativos.
 
 | Arquivo em `public/images/` | Uso | Autor e fonte |
 | --- | --- | --- |
@@ -15,7 +17,5 @@ Derivados WebP comprimidos em qualidade 86, apenas redimensionados, sem geraçã
 Tipografia: Sora Variable nos títulos e Inter Variable no corpo e nos controles. Arquivos WOFF2 locais via Fontsource; ambas usam SIL Open Font License 1.1. O contraste das duas famílias é verificado no navegador.
 
 Os diagramas e módulos de automação são explicações conceituais dos serviços, não interfaces de software existentes. O Animated Beam foi adaptado da referência de dillionverma/Magic UI consultada via 21st.dev, com geometria responsiva, cleanup, animação única e fallback estático para movimento reduzido.
-
-Direção visual editável: https://www.figma.com/design/hi2M7DkkWztSeCrO8ECQgA (quadro de cores, tipografia e composição; não é uma réplica integral da página).
 
 Fontes de craft: Frontend Design (Anthropic), Emil Kowalski Design Engineering, Impeccable, Taste Skill e Vercel Web Interface Guidelines. A documentação e o briefing prevalecem sobre regras genéricas conflitantes de fonte, headline e alternância de fundos.

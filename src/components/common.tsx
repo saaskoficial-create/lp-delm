@@ -7,7 +7,7 @@ import { site } from '@/content/site'
 
 export function Brand({ inverse = false }: { inverse?: boolean }) {
   return <a href="#inicio" className={cn('brand', inverse && 'brand-inverse')} aria-label="DELM — início">
-    <img src="/brand/delm-symbol.jpg" alt="" width="44" height="44" />
+    <img src="/brand/delm-symbol.webp" alt="" width="44" height="44" />
     <span>DELM<span className="brand-dot">.</span></span>
   </a>
 }

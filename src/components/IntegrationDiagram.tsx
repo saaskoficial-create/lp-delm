@@ -31,7 +31,7 @@ export function IntegrationDiagram() {
         <div ref={wms} className="connection-node"><Box size={20} /><div><strong>WMS</strong><span>Estoque</span></div></div>
         <div ref={tms} className="connection-node"><Route size={20} /><div><strong>TMS</strong><span>Transporte</span></div></div>
       </div>
-      <div ref={hub} className="connection-hub"><img src="/brand/delm-symbol.jpg" alt="" width="72" height="72" /><strong>DELM</strong></div>
+      <div ref={hub} className="connection-hub"><img src="/brand/delm-symbol.webp" alt="" width="72" height="72" /><strong>DELM</strong></div>
       <div ref={output} className="connection-output"><Workflow size={26} /><strong>Uma operação<br />conectada.</strong><span>Dados no mesmo fluxo.</span></div>
     </div>
     <figcaption>Da informação isolada ao processo conectado.</figcaption>

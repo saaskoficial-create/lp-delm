@@ -41,8 +41,8 @@ export function AnimatedBeam({ container, from, to, curvature = 0, delay = 0 }: 
   }, [container, from, to, curvature])
 
   return <svg className="animated-beam" width={geometry.width} height={geometry.height} viewBox={`0 0 ${geometry.width} ${geometry.height}`} aria-hidden="true" focusable="false">
-    <path d={geometry.path} stroke="#c8d0ed" strokeWidth="2" fill="none" />
+    <path d={geometry.path} stroke="var(--connection-line)" strokeWidth="2" fill="none" />
     <path d={geometry.path} stroke={`url(#${id})`} strokeWidth="2.5" fill="none" />
-    <defs><motion.linearGradient id={id} gradientUnits="userSpaceOnUse" initial={{ x1: '0%', x2: '0%', y1: '0%', y2: '0%' }} animate={visible && !reduced ? { x1: ['-20%', '120%'], x2: ['0%', '140%'] } : undefined} transition={{ duration: 4, delay, ease: 'linear' }}><stop stopColor="#3e4fe8" stopOpacity="0" /><stop offset="0.5" stopColor="#3e4fe8" /><stop offset="1" stopColor="#3e4fe8" stopOpacity="0" /></motion.linearGradient></defs>
+    <defs><motion.linearGradient id={id} gradientUnits="userSpaceOnUse" initial={{ x1: '0%', x2: '0%', y1: '0%', y2: '0%' }} animate={visible && !reduced ? { x1: ['-20%', '120%'], x2: ['0%', '140%'] } : undefined} transition={{ duration: 4, delay, ease: 'linear' }}><stop stopColor="var(--primary)" stopOpacity="0" /><stop offset="0.5" stopColor="var(--primary)" /><stop offset="1" stopColor="var(--primary)" stopOpacity="0" /></motion.linearGradient></defs>
   </svg>
 }

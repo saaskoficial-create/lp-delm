@@ -29,9 +29,9 @@ As dez seções seguem a copy fornecida para a DELM: hero, problema, soluções,
 - `src/content/site.ts`: conteúdo recorrente, aplicações, navegação e etapas.
 - `src/components/`: seções da página; os componentes oficiais do shadcn estão em `ui/`.
 - `src/styles.css`: tokens de marca, layout e breakpoints.
-- `public/brand/delm-symbol.jpg`: logo atual fornecido pelo cliente.
+- `public/brand/delm-symbol.webp`: logo corrigida fornecida pelo usuário, otimizada para a página; `delm-logo-original.png` preserva o arquivo original e `delm-favicon.png` é o ícone do navegador.
 
-O azul foi derivado visualmente do logo; não foi fornecido manual com códigos oficiais. A página usa Sora nos títulos e Inter no texto, ambas hospedadas localmente. As fotografias são reais, licenciadas pelo Pexels, e não representam equipe, clientes ou endosso da DELM. Os diagramas de ERP/WMS/TMS são ilustrações explicativas, e não screenshots de um produto. Não há resultados, preços ou depoimentos inventados. A direção visual está em `DESIGN.md`; fontes, autores e licenças dos assets estão em [docs/assets.md](docs/assets.md).
+A identidade preta e amarela segue a imagem corrigida pelo usuário em 02/10/2026. Acento principal `#ffb800`; não foi fornecido manual com códigos oficiais. A página usa Sora nos títulos e Inter no texto, ambas hospedadas localmente. As fotografias são reais, licenciadas pelo Pexels, e não representam equipe, clientes ou endosso da DELM. Os diagramas de ERP/WMS/TMS são ilustrações explicativas, e não screenshots de um produto. Não há resultados, preços ou depoimentos inventados. A direção visual está em `DESIGN.md`; fontes, autores e licenças dos assets estão em [docs/assets.md](docs/assets.md).
 
 ## Configurar a captação
 
