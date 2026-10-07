@@ -16,13 +16,14 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
   </a>
 }
 
-export function Reveal({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+export function Reveal({ children, className, delay = 0, id }: { children: ReactNode; className?: string; delay?: number; id?: string }) {
   const reduced = useReducedMotion()
   const element = useRef<HTMLDivElement>(null)
   const hydrated = useSyncExternalStore(subscribe, clientSnapshot, serverSnapshot)
   const inView = useInView(element, { amount: 0.08 })
   return <motion.div
     ref={element}
+    id={id}
     className={className}
     initial={false}
     animate={{ opacity: !hydrated || reduced || inView ? 1 : 0, y: !hydrated || reduced || inView ? 0 : 18 }}

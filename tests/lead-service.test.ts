@@ -98,12 +98,53 @@ describe('Lead endpoint contract', () => {
       expect(response.status).toBe(200)
       expect((await response.json()).ok).toBe(true)
       expect(received).toMatchObject({ source: 'lp-delm', lead: { company: validLead.company } })
-      const invalid = await fetch(url, { method: 'POST', body: '{broken' })
+      const invalid = await fetch(url, { method: 'POST', body: '{broken', headers: { 'Content-Type': 'application/json' } })
       expect(invalid.status).toBe(400)
-      const oversized = await fetch(url, { method: 'POST', body: 'x'.repeat(17000) })
+      const oversized = await fetch(url, { method: 'POST', body: 'x'.repeat(17000), headers: { 'Content-Type': 'application/json' } })
       expect(oversized.status).toBe(413)
+      expect((await fetch(url, { method: 'POST', body: JSON.stringify(validLead) })).status).toBe(415)
+      expect((await fetch(url, { method: 'POST', body: JSON.stringify(validLead), headers: { 'Content-Type': 'application/json', Origin: 'https://other.example' } })).status).toBe(403)
+      expect((await fetch(url, { method: 'POST', body: JSON.stringify(validLead), headers: { 'Content-Type': 'application/json', 'Sec-Fetch-Site': 'cross-site' } })).status).toBe(403)
     } finally {
       await Promise.all([new Promise<void>((resolve) => api.close(() => resolve())), new Promise<void>((resolve) => destination.close(() => resolve()))])
     }
+  })
+
+  it.each([
+    { name: 'A'.repeat(121) },
+    { name: ' '.repeat(121) + 'Ana' },
+    { corporateEmail: 'a'.repeat(254) + '@example.com' },
+    { whatsapp: '1'.repeat(31) },
+    { company: 'A'.repeat(161) },
+    { projectDescription: 'A'.repeat(2001) },
+    { name: 'Ana\u0000Oliveira' },
+    { contact_note: 'spam link' },
+  ])('rejects excessive or automated input without forwarding: %j', async (override) => {
+    const fetcher = vi.fn()
+    const service = createLeadService({ getWebhookUrl: () => 'https://example.com/hook', fetcher })
+    expect((await service('POST', { ...validLead, ...override })).status).toBe(400)
+    expect(fetcher).not.toHaveBeenCalled()
+  })
+
+  it('coalesces simultaneous duplicate submissions and allows a failed delivery to be retried', async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValueOnce(new Response(null, { status: 502 })).mockResolvedValue(new Response(null, { status: 204 }))
+    const service = createLeadService({ getWebhookUrl: () => 'https://example.com/hook', fetcher })
+    expect((await service('POST', validLead)).status).toBe(502)
+    const responses = await Promise.all([service('POST', validLead), service('POST', { ...validLead, contact_note: '' })])
+    expect(responses.map((response) => response.status)).toEqual([200, 200])
+    expect((await service('POST', validLead)).status).toBe(200)
+    expect(fetcher).toHaveBeenCalledTimes(2)
+    expect(JSON.parse(String(fetcher.mock.calls[1]?.[1]?.body)).lead).not.toHaveProperty('contact_note')
+  })
+
+  it('limits attempts by client, isolates other clients and expires the limit', async () => {
+    let timestamp = 0
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response(null, { status: 204 }))
+    const service = createLeadService({ getWebhookUrl: () => 'https://example.com/hook', fetcher, now: () => timestamp })
+    for (let i = 0; i < 5; i++) expect((await service('POST', {}, 'client-one')).status).toBe(400)
+    expect((await service('POST', validLead, 'client-one')).status).toBe(429)
+    expect((await service('POST', validLead, 'client-two')).status).toBe(200)
+    timestamp = 600_001
+    expect((await service('POST', validLead, 'client-one')).status).toBe(200)
   })
 })

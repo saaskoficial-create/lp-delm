@@ -48,7 +48,10 @@ for (const width of [360, 390, 768, 1440]) {
       await page.locator('.hero-copy').getByRole('link', { name: 'Quero mapear meu gargalo' }).click()
     }
     await expect(page).toHaveURL(/#diagnostico$/)
-    await expect(page.getByRole('heading', { name: 'Antes de falar sobre software' })).toBeInViewport()
+    await expect(page.getByRole('heading', { name: 'Conte um pouco sobre sua empresa.' })).toBeInViewport()
+    await expect.poll(() => page.locator('#diagnostico').evaluate((node) => node.getBoundingClientRect().top)).toBeGreaterThanOrEqual(70)
+    await expect.poll(() => page.locator('#diagnostico').evaluate((node) => node.getBoundingClientRect().top)).toBeLessThan(130)
+    await page.screenshot({ path: `test-results/delm-${width}-form-anchor.png` })
   })
 }
 
@@ -104,4 +107,53 @@ test('entrance, scroll exit and return work without browser errors', async ({ pa
   await expect(page.locator('.form-card')).toHaveCSS('opacity', '1')
   await page.screenshot({ path: 'test-results/delm-formulario-desktop.png' })
   expect(errors).toEqual([])
+})
+
+test('mobile form limits, autofill without events, validation and repeated submit', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const posts: Record<string, string>[] = []
+  await page.route('**/api/leads', async (route) => {
+    if (route.request().method() === 'GET') return route.fulfill({ json: { ok: true, available: true } })
+    posts.push(route.request().postDataJSON())
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    return route.fulfill({ json: { ok: true, message: 'Informações recebidas.' } })
+  })
+  await page.goto('/#diagnostico')
+  await expect(page.getByRole('heading', { name: 'Conte um pouco sobre sua empresa.' })).toBeInViewport()
+  const inputs = [['name', 'name', '120'], ['corporateEmail', 'email', '254'], ['whatsapp', 'tel', '30'], ['company', 'organization', '160']]
+  for (const [id, autocomplete, limit] of inputs) {
+    const input = page.locator('#' + id)
+    await expect(input).toHaveAttribute('autocomplete', autocomplete!)
+    await expect(input).toHaveAttribute('maxlength', limit!)
+    await expect(input).toHaveAttribute('required', '')
+    await expect(input).toHaveCSS('font-size', '16px')
+  }
+  await expect(page.locator('#corporateEmail')).toHaveAttribute('autocapitalize', 'none')
+  await expect(page.locator('#contact-note')).toHaveAttribute('tabindex', '-1')
+  const description = page.locator('#projectDescription')
+  await description.fill('')
+  await description.focus()
+  await page.keyboard.insertText('A'.repeat(2200))
+  expect((await description.inputValue()).length).toBe(2000)
+  await expect(page.locator('#projectDescription-hint')).toContainText('2.000 / 2.000')
+  await fillLead(page)
+  await page.locator('#whatsapp').fill('123')
+  await page.getByRole('button', { name: 'Quero analisar minha operação' }).click()
+  await expect(page.locator('#whatsapp-error')).toContainText('Informe o telefone com DDD.')
+  expect(posts).toHaveLength(0)
+  // Simulate a password manager/browser that fills the DOM without change events.
+  await page.evaluate(() => {
+    const values = { name: 'Ana Autopreenchimento', corporateEmail: 'ANA+AUTO@EXAMPLE.COM', whatsapp: '+55 11 99999-9999', company: 'Empresa Automática' }
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!
+    for (const [id, value] of Object.entries(values)) setter.call(document.getElementById(id), value)
+  })
+  const form = page.getByRole('form', { name: 'Qualificação da operação' })
+  await form.evaluate((node) => {
+    const element = node as HTMLFormElement
+    element.requestSubmit()
+    element.requestSubmit()
+  })
+  await expect(page.locator('.form-success')).toContainText('Informações recebidas.')
+  expect(posts).toHaveLength(1)
+  expect(posts[0]).toMatchObject({ name: 'Ana Autopreenchimento', corporateEmail: 'ana+auto@example.com', company: 'Empresa Automática', contact_note: '' })
 })
