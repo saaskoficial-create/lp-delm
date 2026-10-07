@@ -18,8 +18,25 @@ export function QualificationForm() {
   const [checkAttempt, setCheckAttempt] = useState(0)
   const trap = useRef<HTMLInputElement>(null)
   const sending = useRef(false)
+  const successMessage = useRef<HTMLDivElement>(null)
+  const [invalidField, setInvalidField] = useState<keyof LeadQualificationInput | null>(null)
   const { register, control, handleSubmit, setValue, setError, setFocus, formState: { errors, isSubmitting } } = useForm<LeadQualificationInput>({ resolver: zodResolver(leadSchema), mode: 'onBlur' })
   const description = useWatch({ control, name: 'projectDescription', defaultValue: '' })
+
+  useEffect(() => {
+    if (isSubmitting || !invalidField) return
+    // Fields are disabled during delivery; wait until they can receive focus again.
+    setFocus(invalidField)
+    document.getElementById(invalidField)?.scrollIntoView({ behavior: 'instant', block: 'center' })
+    setInvalidField(null)
+  }, [invalidField, isSubmitting, setFocus])
+
+  useEffect(() => {
+    if (!feedback?.success) return
+    // Replacing the tall form can leave mobile visitors below the confirmation.
+    successMessage.current?.focus({ preventScroll: true })
+    document.getElementById('diagnostico')?.scrollIntoView({ behavior: 'instant', block: 'start' })
+  }, [feedback])
 
   useEffect(() => {
     let active = true
@@ -45,6 +62,7 @@ export function QualificationForm() {
     if (availability !== 'available' || sending.current) return
     sending.current = true
     setFeedback(null)
+    setInvalidField(null)
     try {
       const response = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...values, contact_note: trap.current?.value ?? '' }), signal: AbortSignal.timeout(16_000) })
       const data: LeadResponse = await response.json()
@@ -55,7 +73,7 @@ export function QualificationForm() {
           if (field in leadSchema.shape) setError(field as keyof LeadQualificationInput, { message: messages[0] })
           if (!firstInvalid && field in leadSchema.shape) firstInvalid = field as keyof LeadQualificationInput
         }
-        if (firstInvalid) setFocus(firstInvalid)
+        if (firstInvalid) setInvalidField(firstInvalid)
         throw new Error(data.message || 'Não foi possível enviar agora. Tente novamente.')
       }
       setFeedback({ success: true, message: data.message })
@@ -80,7 +98,7 @@ export function QualificationForm() {
     <div className="container form-layout">
       <Reveal className="form-intro"><Eyebrow light>Vamos entender sua operação</Eyebrow><h2 id="form-title">Antes de falar sobre software, queremos entender <span>sua operação.</span></h2><p>Responda algumas perguntas sobre o cenário atual da sua empresa. Isso nos ajuda a entender se existe aderência e qual tipo de solução pode fazer sentido.</p><div className="form-next"><span className="dark-label">O que acontece depois</span><div><span>01</span><p>Você conta como funciona hoje.</p></div><div><span>02</span><p>Analisamos o cenário e a aderência.</p></div><div><span>03</span><p>Se fizer sentido, avançamos com o diagnóstico.</p></div></div><div className="form-trust"><LockKeyhole size={16} aria-hidden="true" /><span>Informações usadas para analisar sua solicitação e entrar em contato.</span></div></Reveal>
       <Reveal id="diagnostico" className="form-card section-anchor">
-        {feedback?.success ? <div className="form-success" role="status"><CheckCircle2 size={47} strokeWidth={1.5} /><span className="form-kicker">PRÓXIMO PASSO</span><h3>Agora entendemos<br />um pouco mais.</h3><p>{feedback.message}</p><a href="#inicio">Voltar ao início<ArrowUpRight size={17} /></a></div> : <>
+        {feedback?.success ? <div className="form-success" ref={successMessage} tabIndex={-1} role="status"><CheckCircle2 size={47} strokeWidth={1.5} aria-hidden="true" /><span className="form-kicker">PRÓXIMO PASSO</span><h3>Agora entendemos<br />um pouco mais.</h3><p>{feedback.message}</p><a href="#inicio">Voltar ao início<ArrowUpRight size={17} aria-hidden="true" /></a></div> : <>
           <div className="form-card-heading"><div><span className="form-kicker">COMECE PELO SEU GARGALO</span><h3>Conte um pouco sobre sua empresa.</h3></div><span className="form-heading-icon"><ArrowUpRight size={24} /></span></div>
           <form autoComplete="on" aria-busy={isSubmitting} noValidate onSubmit={(event) => {
             // Read DOM values at submission too: some browser autofill providers omit input events.

@@ -12,7 +12,7 @@ async function fillLead(page: Page) {
   await page.getByLabel('Qual é o momento do projeto?').selectOption('Nos próximos 3 meses')
 }
 
-for (const width of [360, 390, 768, 1440]) {
+for (const width of [320, 360, 390, 768, 1440]) {
   test(`responsive content and real unconfigured state at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
@@ -26,6 +26,10 @@ for (const width of [360, 390, 768, 1440]) {
     }
     const dimensions = await page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }))
     expect(dimensions.document).toBeLessThanOrEqual(dimensions.viewport)
+    for (const selector of ['.solution-pair', '.automation-illustration', '.connection-systems']) {
+      expect(await page.locator(selector).evaluate(node => node.scrollWidth - node.clientWidth)).toBeLessThanOrEqual(1)
+    }
+    expect(await page.locator('a[href^="#"]').evaluateAll(nodes => nodes.every(node => document.getElementById(node.getAttribute('href')!.slice(1))))).toBe(true)
     await expect(page.getByRole('button', { name: 'Quero analisar minha operação' })).toBeDisabled()
     await expect(page.getByText('O envio está temporariamente indisponível.', { exact: false })).toBeVisible()
     for (const image of await page.locator('img[loading="lazy"]').all()) {
@@ -78,6 +82,33 @@ test('validation, pending, failed delivery, retained values and confirmed succes
   await submit.click()
   await expect(page.locator('.form-success')).toContainText('Informações recebidas.')
   expect(postCount).toBe(2)
+})
+
+test('mobile server validation focuses the field and successful delivery stays visible', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 740 })
+  let posts = 0
+  await page.route('**/api/leads', async route => {
+    if (route.request().method() === 'GET') return route.fulfill({ json: { ok: true, available: true } })
+    posts++
+    await new Promise(resolve => setTimeout(resolve, 100))
+    return route.fulfill({ status: posts === 1 ? 400 : 200, json: posts === 1 ? { ok: false, fieldErrors: { corporateEmail: ['Revise seu e-mail.'] }, message: 'Revise seu e-mail.' } : { ok: true, message: 'Informações recebidas.' } })
+  })
+  await page.goto('/#diagnostico')
+  await fillLead(page)
+  const submit = page.getByRole('button', { name: 'Quero analisar minha operação' })
+  await submit.click()
+  await expect(page.locator('#corporateEmail-error')).toContainText('Revise seu e-mail.')
+  await expect(page.getByLabel('E-mail corporativo')).toBeFocused()
+  await expect(page.getByLabel('E-mail corporativo')).toBeInViewport()
+  await expect(page.getByLabel('Empresa', { exact: true })).toHaveValue('Operação Exemplo')
+  await submit.click()
+  const confirmation = page.locator('.form-success')
+  await expect(confirmation).toBeFocused()
+  await expect(confirmation).toContainText('Informações recebidas.')
+  await expect(page.getByRole('heading', { name: 'Agora entendemos um pouco mais.' })).toBeInViewport()
+  await expect(page.getByRole('link', { name: 'Voltar ao início' })).toBeInViewport()
+  expect(posts).toBe(2)
+  await page.screenshot({ path: 'test-results/delm-320-success.png' })
 })
 
 test('entrance, scroll exit and return work without browser errors', async ({ page }) => {

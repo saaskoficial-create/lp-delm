@@ -351,7 +351,7 @@
   .feature-icon { display: none; } .solution-feature-copy h3, .solution-feature h3 { font-size: 23px; }
   .solution-feature-copy > p, .solution-feature > p { font-size: 14px; }
   .solution-feature-copy .feature-outcome { font-size: 12px; margin-top: 20px; padding-top: 17px; }
-  .solution-pair { grid-template-columns: 1fr; gap: 16px; margin-top: 16px; } .solution-feature { padding: 24px; }
+  .solution-pair { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 16px; } .solution-feature { padding: 24px; min-width: 0; }
   .automation-illustration { height: 160px; gap: 4px; } .automation-illustration > span { min-width: 60px; }
   .automation-illustration > span > svg { padding: 15px; } .automation-illustration small { font-size: 11px; }
   .custom-illustration { height: 164px; } .solution-services { grid-template-columns: 1fr; gap: 28px; margin-top: 32px; }
@@ -391,6 +391,12 @@
   .site-footer { padding-block: 32px 24px; } .footer-top { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
   .footer-top nav { flex-direction: column; gap: 0; padding-top: 0; } .footer-contact { grid-column: 1 / -1; }
   .footer-bottom { flex-direction: column; gap: 12px; margin-top: 26px; font-size: 10px; }
+}
+@media (max-width: 359px) {
+  .connection-node { flex-direction: column; gap: 4px; text-align: center; }
+  .automation-illustration > span { min-width: 0; flex: 1; }
+  .automation-illustration > span > svg { padding: 11px; }
+  .automation-illustration small { font-size: 10px; white-space: normal; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

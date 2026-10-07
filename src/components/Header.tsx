@@ -38,7 +38,8 @@ export function Header() {
               window.history.pushState(null, '', href)
               target.tabIndex = -1
               target.focus({ preventScroll: true })
-              target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              // CSS chooses smooth scrolling only when reduced motion is not requested.
+              target.scrollIntoView({ behavior: 'auto', block: 'start' })
             })
           }}>
             <SheetHeader><SheetTitle>DELM — navegação</SheetTitle></SheetHeader>
