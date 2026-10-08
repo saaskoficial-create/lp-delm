@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowUpRight, Check, CheckCircle2, CircleAlert, LoaderCircle, LockKeyhole } from 'lucide-react'
@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
+import { caretAfterDigits, formatPhone } from '@/lib/phone-mask'
 import { employeeRanges, leadLimits, leadSchema, problems, segments, timeframes, type LeadQualificationInput, type LeadResponse } from '@/lib/lead-schema'
 import { Eyebrow, Reveal } from './common'
 
@@ -82,6 +83,19 @@ export function QualificationForm() {
     } finally { sending.current = false }
   }
 
+  const whatsapp = register('whatsapp')
+  function maskWhatsapp(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.target
+    const digitsBeforeCaret = input.value.slice(0, input.selectionStart ?? input.value.length).replace(/\D/g, '').length
+    input.value = formatPhone(input.value)
+    if (document.activeElement === input) {
+      const caret = caretAfterDigits(input.value, digitsBeforeCaret)
+      input.setSelectionRange(caret, caret)
+    }
+    return whatsapp.onChange(event)
+  }
+  const registerInput = (name: typeof inputFields[number]['name']) => name === 'whatsapp' ? { ...whatsapp, onChange: maskWhatsapp } : register(name)
+
   const inputFields = [
     { name: 'name', label: 'Nome', placeholder: 'Seu nome', autocomplete: 'name', type: 'text' },
     { name: 'corporateEmail', label: 'E-mail corporativo', placeholder: 'voce@empresa.com.br', autocomplete: 'email', type: 'email' },
@@ -105,7 +119,7 @@ export function QualificationForm() {
             const current = new FormData(event.currentTarget)
             for (const field of Object.keys(leadSchema.shape) as (keyof LeadQualificationInput)[]) {
               const value = current.get(field)
-              if (typeof value === 'string') setValue(field, value as LeadQualificationInput[typeof field])
+              if (typeof value === 'string') setValue(field, (field === 'whatsapp' ? formatPhone(value) : value) as LeadQualificationInput[typeof field])
             }
             void handleSubmit(submit)(event)
           }} aria-label="Qualificação da operação"><noscript><p className="form-alert">Ative o JavaScript do navegador para preencher e enviar este formulário.</p></noscript>
@@ -113,7 +127,7 @@ export function QualificationForm() {
             <fieldset disabled={isSubmitting} className="form-fields">
               <legend className="sr-only">Informações da empresa e do projeto</legend>
               <div className="form-trap" aria-hidden="true"><label htmlFor="contact-note">Deixe este campo vazio</label><input id="contact-note" name="contact_note" ref={trap} autoComplete="off" tabIndex={-1} /></div>
-              {inputFields.map((field) => <div className="form-field" key={field.name}><Label htmlFor={field.name}>{field.label}</Label><Input id={field.name} type={field.type} required minLength={field.type === 'text' ? 2 : undefined} spellCheck={false} autoCapitalize={field.type === 'email' || field.type === 'tel' ? 'none' : 'words'} autoCorrect={field.type === 'email' || field.type === 'tel' ? 'off' : undefined} inputMode={field.type === 'tel' ? 'tel' : field.type === 'email' ? 'email' : undefined} placeholder={field.placeholder} autoComplete={field.autocomplete} maxLength={leadLimits[field.name]} aria-invalid={!!errors[field.name]} aria-describedby={`${field.name}-hint${errors[field.name] ? ` ${field.name}-error` : ''}`} {...register(field.name)} /><span id={`${field.name}-hint`} className="field-hint">{field.name === 'whatsapp' ? 'Inclua o DDD. Para outro país, inclua o código internacional.' : `Até ${leadLimits[field.name]} caracteres.`}</span>{errors[field.name] && <p id={`${field.name}-error`} className="field-error" aria-live="polite">{errors[field.name]?.message}</p>}</div>)}
+              {inputFields.map((field) => <div className="form-field" key={field.name}><Label htmlFor={field.name}>{field.label}</Label><Input id={field.name} type={field.type} required minLength={field.type === 'text' ? 2 : undefined} spellCheck={false} autoCapitalize={field.type === 'email' || field.type === 'tel' ? 'none' : 'words'} autoCorrect={field.type === 'email' || field.type === 'tel' ? 'off' : undefined} inputMode={field.type === 'tel' ? 'tel' : field.type === 'email' ? 'email' : undefined} placeholder={field.placeholder} autoComplete={field.autocomplete} maxLength={leadLimits[field.name]} aria-invalid={!!errors[field.name]} aria-describedby={`${field.name}-hint${errors[field.name] ? ` ${field.name}-error` : ''}`} {...registerInput(field.name)} /><span id={`${field.name}-hint`} className="field-hint">{field.name === 'whatsapp' ? 'Inclua o DDD. Para outro país, comece com + e o código internacional.' : `Até ${leadLimits[field.name]} caracteres.`}</span>{errors[field.name] && <p id={`${field.name}-error`} className="field-error" aria-live="polite">{errors[field.name]?.message}</p>}</div>)}
               {selectFields.map((field) => <div key={field.name} className={`form-field ${field.wide ? 'field-wide' : ''}`}><Label htmlFor={field.name}>{field.label}</Label><NativeSelect id={field.name} required aria-invalid={!!errors[field.name]} aria-describedby={errors[field.name] ? `${field.name}-error` : undefined} defaultValue="" {...register(field.name)}><NativeSelectOption value="" disabled>{field.placeholder}</NativeSelectOption>{field.options.map((option) => <NativeSelectOption key={option} value={option}>{option}</NativeSelectOption>)}</NativeSelect>{errors[field.name] && <p id={`${field.name}-error`} className="field-error" aria-live="polite">{errors[field.name]?.message}</p>}</div>)}
               <div className="form-field field-wide"><Label htmlFor="projectDescription">O que você gostaria de melhorar ou desenvolver?</Label><Textarea id="projectDescription" rows={4} required minLength={10} maxLength={leadLimits.projectDescription} autoComplete="off" placeholder="Ex.: nosso ERP não conversa com o WMS e precisamos atualizar informações manualmente." aria-invalid={!!errors.projectDescription} aria-describedby={`projectDescription-hint${errors.projectDescription ? ' projectDescription-error' : ''}`} {...register('projectDescription')} /><div className="field-hint description-meta" id="projectDescription-hint"><span>Descreva seu objetivo em 10 a 2.000 caracteres.</span><span>{description.length.toLocaleString('pt-BR')} / 2.000</span></div>{errors.projectDescription && <p id="projectDescription-error" className="field-error" aria-live="polite">{errors.projectDescription.message}</p>}</div>
               <div className="form-field field-wide"><Label htmlFor="timeframe">Qual é o momento do projeto?</Label><NativeSelect id="timeframe" required defaultValue="" aria-invalid={!!errors.timeframe} aria-describedby={errors.timeframe ? 'timeframe-error' : undefined} {...register('timeframe')}><NativeSelectOption value="" disabled>Selecione o momento</NativeSelectOption>{timeframes.map((option) => <NativeSelectOption key={option} value={option}>{option}</NativeSelectOption>)}</NativeSelect>{errors.timeframe && <p id="timeframe-error" className="field-error" aria-live="polite">{errors.timeframe.message}</p>}</div>

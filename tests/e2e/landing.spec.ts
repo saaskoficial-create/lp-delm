@@ -188,3 +188,21 @@ test('mobile form limits, autofill without events, validation and repeated submi
   expect(posts).toHaveLength(1)
   expect(posts[0]).toMatchObject({ name: 'Ana Autopreenchimento', corporateEmail: 'ana+auto@example.com', company: 'Empresa Automática', contact_note: '' })
 })
+
+test('masks the WhatsApp field while typing', async ({ page }) => {
+  await page.goto('/#diagnostico')
+  const whatsapp = page.locator('#whatsapp')
+  await whatsapp.pressSequentially('11999998888')
+  await expect(whatsapp).toHaveValue('(11) 99999-8888')
+  await whatsapp.press('Backspace')
+  await expect(whatsapp).toHaveValue('(11) 9999-9888')
+  // Editing the middle keeps the caret after the digit just typed.
+  await whatsapp.press('Home')
+  for (let i = 0; i < 6; i++) await whatsapp.press('ArrowRight')
+  await whatsapp.press('7')
+  await expect(whatsapp).toHaveValue('(11) 97999-9888')
+  expect(await whatsapp.evaluate((input: HTMLInputElement) => input.selectionStart)).toBe(7)
+  await whatsapp.fill('')
+  await whatsapp.pressSequentially('+351912345678')
+  await expect(whatsapp).toHaveValue('+351912345678')
+})
